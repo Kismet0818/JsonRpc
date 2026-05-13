@@ -1,6 +1,6 @@
 #pragma once
-#include<string>
-#include<unordered_map>
+#include <string>
+#include <unordered_map>
 
 namespace bitrpc {
     #define KEY_METHOD      "method"
@@ -20,44 +20,47 @@ namespace bitrpc {
         REQ_TOPIC,
         RSP_TOPIC,
         REQ_SERVICE,
-        RSP_SERVICE,
+        RSP_SERVICE
     };
 
-    enum class RCode{
+    enum class RCode {
         RCODE_OK = 0,
-        RCODE_PARES_FAILED,
+        RCODE_PARSE_FAILED,
+        RCODE_ERROR_MSGTYPE,
         RCODE_INVALID_MSG,
         RCODE_DISCONNECTED,
         RCODE_INVALID_PARAMS,
         RCODE_NOT_FOUND_SERVICE,
         RCODE_INVALID_OPTYPE,
-        RCODE_NOT_FOUND_TOPIC
+        RCODE_NOT_FOUND_TOPIC,
+        RCODE_INTERNAL_ERROR
     };
-    static std::string errReason(RCode code){
+    static std::string errReason(RCode code) {
         static std::unordered_map<RCode, std::string> err_map = {
             {RCode::RCODE_OK, "成功处理！"},
-            {RCode::RCODE_PARES_FAILED, "消息解析失败！"},
-            {RCode::RCODE_INVALID_MSG, "无效消息！"},
+            {RCode::RCODE_PARSE_FAILED, "消息解析失败！"},
+            {RCode::RCODE_ERROR_MSGTYPE, "消息类型错误！"},
+            {RCode::RCODE_INVALID_MSG, "无效消息"},
             {RCode::RCODE_DISCONNECTED, "连接已断开！"},
             {RCode::RCODE_INVALID_PARAMS, "无效的Rpc参数！"},
             {RCode::RCODE_NOT_FOUND_SERVICE, "没有找到对应的服务！"},
-            {RCode::RCODE_INVALID_OPTYPE, "无效的操作类型！"},
-            {RCode::RCODE_NOT_FOUND_TOPIC, "没有找到对应的主题！"}
+            {RCode::RCODE_INVALID_OPTYPE, "无效的操作类型"},
+            {RCode::RCODE_NOT_FOUND_TOPIC, "没有找到对应的主题！"},
+            {RCode::RCODE_INTERNAL_ERROR, "内部错误！"}
         };
         auto it = err_map.find(code);
-        if(it == err_map.end()){
+        if (it == err_map.end()) {
             return "未知错误！";
         }
         return it->second;
     }
 
-    enum class RType{
-        REQ_SYNC = 0,
-        REQ_ASYNC,
-        REQ_CLLBACK
+    enum class RType {
+        REQ_ASYNC = 0,
+        REQ_CALLBACK
     };
 
-    enum class TopicOptype{
+    enum class TopicOptype {
         TOPIC_CREATE = 0,
         TOPIC_REMOVE,
         TOPIC_SUBSCRIBE,
@@ -65,10 +68,11 @@ namespace bitrpc {
         TOPIC_PUBLISH
     };
 
-    enum class ServiceOptype{
-        SERVICE_REGISTRY,
+    enum class ServiceOptype {
+        SERVICE_REGISTRY = 0,
         SERVICE_DISCOVERY,
         SERVICE_ONLINE,
-        SERVICE_OFFLINE
+        SERVICE_OFFLINE,
+        SERVICE_UNKNOW
     };
 }
